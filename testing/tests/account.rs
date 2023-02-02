@@ -53,7 +53,7 @@ mod tests {
         println!("Testing solidity API");
 
         let bs = MemoryBlockstore::default();
-        let actors = std::fs::read("./builtin-actors/output/builtin-actors-devnet-wasm.car")
+        let actors = std::fs::read("./builtin-actors/output/builtin-actors-hyperspace.car")
             .expect("Unable to read actor devnet file");
         let bundle_root = bundle::import_bundle(&bs, &actors).unwrap();
 
@@ -114,10 +114,11 @@ mod tests {
             ..Message::default()
         };
 
+        let len = message.params.len();
         let res = executor
-            .execute_message(message, ApplyKind::Explicit, 100)
+            .execute_message(message, ApplyKind::Explicit, len)
             .unwrap();
-
+        
         assert_eq!(res.msg_receipt.exit_code.value(), 0);
 
         let exec_return: Return = RawBytes::deserialize(&res.msg_receipt.return_data).unwrap();
@@ -141,9 +142,12 @@ mod tests {
             ..Message::default()
         };
 
+        let len = message.params.len();
         let res = executor
-            .execute_message(message, ApplyKind::Explicit, 100)
+            .execute_message(message, ApplyKind::Explicit, len)
             .unwrap();
+
+        dbg!(&res);
 
         assert_eq!(res.msg_receipt.exit_code.value(), 0);
 
@@ -165,8 +169,9 @@ mod tests {
             ..Message::default()
         };
 
+        let len = message.params.len();
         let res = executor
-            .execute_message(message, ApplyKind::Explicit, 100)
+            .execute_message(message, ApplyKind::Explicit, len)
             .unwrap();
 
         assert_eq!(res.msg_receipt.exit_code.value(), 0);
